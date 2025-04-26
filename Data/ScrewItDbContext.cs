@@ -9,6 +9,7 @@ namespace ScrewItBackEnd.Data
 {
     public class ScrewItDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; }  
         public DbSet<Product> Products { get; set; }  
 
         public ScrewItDbContext(DbContextOptions<ScrewItDbContext> options)
