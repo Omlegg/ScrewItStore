@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ScrewItBackEnd</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ScrewItBackEnd.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <center>
+        <div id = "header">
+            <div id = "left-header">
+                <p id = "logo-name">ScrewIt Store</p>
+            </div>
+            <div id = "right-header">
+                <div id = "sign-up"><p>Sign Up</p></div>
+                <div id = "sign-in"><p>Sign In</p></div>
+                <div id = "sign-in"><p>Create A Product</p></div>
+            </div>
+        </div>
+    </center>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <center>
+        <div id = "footer">
+            <div>
+                <p id = "logo-name">ScrewIt Store</p>
+                <p>About Us</p>
+                <p>Our History</p>
+                <p>Our Purpose</p>
+            
+            </div>
+            <div>
+                <p id = "logo-name">Contact Us</p>
+                <p>Place Holder Country</p>
+                <p>Place Holder City</p>
+                <p>Place Holder adress</p>
+                <p>Place Holder phone number</p>
+            </div>
+        </div>
+    </center>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
