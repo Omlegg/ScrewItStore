@@ -6,22 +6,25 @@ using ScrewItBackEnd.Models;
 using ScrewItBackEnd.Services;using Microsoft.EntityFrameworkCore;
 
 
+[Route("[controller]/[action]")]
 public class ProductController : Controller
 {
-    private readonly ProductService _productService;
+    private readonly IProductService _productService;
 
-    public ProductController(ProductService productService)
+    public ProductController(IProductService productService)
     {
         _productService = productService;
     }
+    [Route("/")]
     public async Task<IActionResult> Index()
     {
         var products = await _productService.GetAllProductsAsync();
         return View(products);  
     }
 
- 
-    public async Task<IActionResult> Details(int id)
+    
+    [Route("/{id}")]
+    public async Task<IActionResult> Details([FromQuery] int id)
     {
         var product = await _productService.GetProductByIdAsync(id);
         if (product == null)
@@ -39,7 +42,6 @@ public class ProductController : Controller
 
  
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(string name, string description, decimal price)
     {
         if (ModelState.IsValid)
@@ -82,8 +84,8 @@ public class ProductController : Controller
         return View(product);  
     }
 
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
+    [HttpDelete]
+    [Route("/{id}")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         await _productService.DeleteProductAsync(id);
