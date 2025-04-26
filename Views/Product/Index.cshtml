@@ -1,0 +1,66 @@
+﻿@using ScrewItBackEnd.Entities
+@model List<Product>?
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+    <div id = "main-home-page">
+        <input id = "search" placeholder="Search">
+        </input>
+    </div>
+    @Html.ActionLink("Create a new product", "Create", "Product")
+    
+
+    
+<h2>All products</h2>
+@if(Model == null || Model.Any() == false) {
+    <h3>...</h3>
+}
+else {
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var product in Model) {
+                <tr id="row">
+                    <th><a class="nav-link text-dark" href="Product/Details/@product.Id">@product.Id</a></th> 
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price</td>
+                    <td><button class="btn btn-danger" onclick="deleteGame(@product.Id)">delete</button></td>
+                    <td><button onclick="location.href='@Url.Action("Update", "Product")'" class="btn btn-info">
+                        Back to Home
+                    </button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<script>
+    async function deleteGame(productId) {
+        try {
+            const response = await fetch(`http://localhost:5155/Product/DeleteConfirmed/${productId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                document.getElementById('row').remove();
+            } else {
+                console.error(response);
+            }
+        } catch (error) {
+            console.error("Request failed", error);
+        }
+}
+</script>
