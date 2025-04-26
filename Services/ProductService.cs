@@ -8,7 +8,7 @@ using ScrewItBackEnd.Data;
 
 namespace  ScrewItBackEnd.Services
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
         private readonly ScrewItDbContext _context;
 
