@@ -20,34 +20,29 @@ public class ProductController : Controller
         return View(products);  
     }
 
- 
-    public async Task<IActionResult> Details(int id)
+    
+    [Route("{id}")]
+    public async Task<ActionResult<Product>> Details( int id)
     {
         var product = await _productService.GetProductByIdAsync(id);
         if (product == null)
         {
             return NotFound();
         }
-        return View(product); 
+        return View("Details",product); 
     }
 
-   
     public IActionResult Create()
     {
         return View();
     }
 
- 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(string name, string description, decimal price)
+    public async Task<IActionResult> Create([FromForm]Product product, int[] selectedCategoryIds)
     {
-        if (ModelState.IsValid)
-        {
-            await _productService.CreateProductAsync(name, description, price);
-            return RedirectToAction(nameof(Index)); 
-        }
-        return View();
+        await _productService.CreateProductAsync(product.Name, product.Description, product.Price, selectedCategoryIds);
+        
+        return RedirectToAction("Index");
     }
 
       public async Task<IActionResult> Edit(int id)

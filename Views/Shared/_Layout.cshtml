@@ -9,42 +9,70 @@
     <link rel="stylesheet" href="~/ScrewItBackEnd.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <center>
-        <div id = "header">
-            <div id = "left-header">
-                <p id = "logo-name">ScrewIt Store</p>
-            </div>
-            <div id = "right-header">
-                <div id = "sign-up"><p>Sign Up</p></div>
-                <div id = "sign-in"><p>Sign In</p></div>
-                <div id = "sign-in"><p>Create A Product</p></div>
-            </div>
-        </div>
-    </center>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <style>
+        html, body {
+        height: 100%;
+        margin: 0;
+        }
 
-    <center>
-        <div id = "footer">
-            <div>
-                <p id = "logo-name">ScrewIt Store</p>
-                <p>About Us</p>
-                <p>Our History</p>
-                <p>Our Purpose</p>
-            
-            </div>
-            <div>
-                <p id = "logo-name">Contact Us</p>
-                <p>Place Holder Country</p>
-                <p>Place Holder City</p>
-                <p>Place Holder adress</p>
-                <p>Place Holder phone number</p>
-            </div>
+        .wrapper {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        }
+
+        .content {
+        flex: 1;
+        }
+
+        .footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        }
+    </style>
+    <div class="wrapper">
+        <header>
+            <center>
+                <div id = "header">
+                    <div id = "left-header">
+                        <a href="/" id = "logo-name">ScrewIt Store</a>
+                    </div>
+                    <div id = "right-header">
+                        <div id = "sign-up"><p>Sign Up</p></div>
+                        <div id = "sign-in"><p>Sign In</p></div>
+                        <div id = "sign-in"><p>Create A Product</p></div>
+                    </div>
+                </div>
+            </center>
+        </header>
+        <div class="content">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </center>
+        <footer>
+            <center>
+                <div id = "footer">
+                    <div>
+                        <p id = "logo-name">ScrewIt Store</p>
+                        <p>About Us</p>
+                        <p>Our History</p>
+                        <p>Our Purpose</p>
+                    
+                    </div>
+                    <div>
+                        <p id = "logo-name">Contact Us</p>
+                        <p>Place Holder Country</p>
+                        <p>Place Holder City</p>
+                        <p>Place Holder adress</p>
+                        <p>Place Holder phone number</p>
+                    </div>
+                </div>
+            </center>
+        </footer>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

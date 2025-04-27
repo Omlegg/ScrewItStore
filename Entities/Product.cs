@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,5 +12,7 @@ namespace ScrewItBackEnd.Entities
         public string Description { get; set; } 
         public decimal Price { get; set; } 
         public string Name {get;set;}
+        public ICollection<ProductCategory> ProductCategories { get; set; }
+        public string PictureUrl{get;set;}
     }
 }
