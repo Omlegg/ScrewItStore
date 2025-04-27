@@ -17,13 +17,14 @@ namespace  ScrewItBackEnd.Services
         _context = context;
     }
 
-    public async Task CreateProductAsync(string name, string description, decimal price)
+    public async Task CreateProductAsync(string name, string description, decimal price, string pictureurl)
     {
         var product = new Product
         {
             Name = name,
             Description = description,
-            Price = price
+            Price = price,
+            PictureUrl = pictureurl
         };
 
         _context.Products.Add(product);
@@ -43,6 +44,17 @@ namespace  ScrewItBackEnd.Services
             product.Name = name;
             product.Description = description;
             product.Price = price;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+
+    public async Task UpdateProductPictureUrlAsync(int id, string pictureurl)
+    {
+        var product = await _context.Products.FindAsync(id);
+        if (product != null)
+        {
+            product.PictureUrl = pictureurl;
             await _context.SaveChangesAsync();
         }
     }
