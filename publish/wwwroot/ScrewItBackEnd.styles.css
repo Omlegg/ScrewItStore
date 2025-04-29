@@ -1,0 +1,150 @@
+/* _content/ScrewItBackEnd/Views/Shared/_Layout.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+#header[b-9va0at3fok]{
+  width:100vw;
+  height: 50px;
+  background-color: rgb(151, 141, 160);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+
+}
+#logo-name[b-9va0at3fok]{
+  color:aliceblue;
+  text-shadow: 2px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size :30px;
+}
+
+#right-header[b-9va0at3fok]{
+  width:300px;
+  display: flex;
+  color: aliceblue;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly
+}
+
+#sign-up[b-9va0at3fok]{
+  height:30px;
+  font-size: 15px;
+  width:100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  
+}
+#footer[b-9va0at3fok]{
+  color: antiquewhite;
+  width:100vw;
+  height: 250px;
+  background-color: rgb(151, 141, 160);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+
+
+#main-home-page[b-9va0at3fok]{
+  display: flex;
+  justify-content: center;
+  height: 800px;
+}
+
+body[b-9va0at3fok]{
+  background-color: rgb(196, 216, 255);
+  height:100vh;
+}
+#create-form[b-9va0at3fok]{
+  display: flex;
+  justify-content: space-around;
+  
+
+}
+#main-home-page[b-9va0at3fok]{
+  align-items: center;
+}
+.create-form-column[b-9va0at3fok]{
+
+}
+#form-create[b-9va0at3fok]{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 600px;
+  background-color: rgba(151, 141, 160, 0.686);
+  width:88vw;
+  border-radius: 5px;
+}
+
+.create-form-label[b-9va0at3fok]{
+  color: aliceblue;
+  font-family: 'Gill Sancs', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.create-form-input[b-9va0at3fok]{
+  height:30px;
+  font-size: 15px;
+  width:25vw;
+  display: flex;
+  justify-content: center;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  align-items: center;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.242);
+  color : white;
+}
+
+a.navbar-brand[b-9va0at3fok] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-9va0at3fok] {
+  color: #0077cc;
+}
+
+.btn-primary[b-9va0at3fok] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-9va0at3fok], .nav-pills .show > .nav-link[b-9va0at3fok] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-9va0at3fok] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-9va0at3fok] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-9va0at3fok] {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-9va0at3fok] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer[b-9va0at3fok] {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}

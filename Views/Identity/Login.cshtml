@@ -1,0 +1,168 @@
+@using ScrewItBackEnd.Dtos
+@model LoginDto
+
+<style>
+  .form-column {
+        margin-bottom: 1.5rem;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .create-form-label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .create-form-input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        color: #333;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+        resize: none;
+    }
+
+    .create-form-input:focus {
+        outline: none;
+        border-color: #0056b3;
+        background-color: #fff;
+    }
+
+    .create-form-input option {
+        padding: 10px;
+    }
+
+    .create-form-input:hover {
+        border-color: #007bff;
+    }
+    a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a {
+  color: #0077cc;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}
+
+#form-create {
+  width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #f8f8f8;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#create-form-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-form-label {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+.create-form-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.create-form-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+#form-create button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#form-create button:hover {
+  background-color: #0056b3;
+}
+</style>
+
+<div id="main-home-page">
+    <form id="form-create" method="post" action="/Identity/Login" enctype="multipart/form-data">
+        <div asp-validation-summary="All"></div>
+        <div id="create-form">
+            <div id="create-form-column">
+                <label class="create-form-label" for="UserName">Username</label>
+                <input class="create-form-input" id="UserName" name="UserName" type="text" placeholder="Enter username" required />
+            </div>
+            <div id="create-form-column">
+                <label class="create-form-label" for="Password">Password</label>
+                <input class="create-form-input" id="Password" name="Password" type="password" placeholder="Enter password" required />
+            </div>
+
+            <button type="submit">Login</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
