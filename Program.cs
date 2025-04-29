@@ -15,16 +15,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<AbstractValidator<Product>, ProductValidator>();
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Identity/Login"; 
-    options.AccessDeniedPath = "/Identity/AccessDenied";
-    options.LogoutPath = "/Identity/Logout";
-    options.ExpireTimeSpan = TimeSpan.FromDays(30); 
-    options.SlidingExpiration = true; 
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ScrewItDbContext>()
     .AddDefaultTokenProviders();
@@ -43,7 +33,7 @@ builder.Services.AddAuthentication(defaultScheme: CookieAuthenticationDefaults.A
         configurePolicy: policyBuilder => {
             policyBuilder
                 .RequireRole("Admin")
-                .RequireClaim(ClaimTypes.Name, "Bob", "Ann", "John", "Elnur")
+                .RequireClaim(ClaimTypes.Name, "idk", "Imran", "John", "Elnur")
                 .RequireRole("User");
         }
     );
@@ -53,6 +43,12 @@ builder.Services.AddDbContext<ScrewItDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
 
 var app = builder.Build();
+app.Use((context, next) =>
+{
+    context.Request.Scheme = "http";
+    context.Request.Host = new HostString("20.89.72.109");
+    return next();
+});
 app.UseHttpsRedirection();
 app.UseAuthentication().UseCookiePolicy();
 app.UseStaticFiles();

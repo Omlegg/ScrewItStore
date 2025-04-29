@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using ScrewItBackEnd.Dtos;
 using ScrewItBackEnd.Entities;
 
 namespace ScrewItBackEnd.Services
 {
     public interface IProductService
     {
+        List<ProductSearch> GetSuggestion(string searchTerm);
         Task CreateProductAsync(string name, string description, decimal price, int[] selectedCategoryIds, string pictureurl, string userId);
         Task<Product> GetProductByIdAsync(int id);
         Task UpdateProductAsync(int id, string name, string description, decimal price);

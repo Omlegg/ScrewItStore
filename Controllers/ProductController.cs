@@ -37,7 +37,12 @@ public class ProductController : Controller
         return View(products);  
     }
 
-    
+    [Authorize(Roles = UserRoleDefaults.Admin)]
+    public async Task<IActionResult> Admin()
+    {
+        var products = await _productService.GetAllProductsAsync();
+        return View(products);  
+    }
     [Route("{id}")]
     public async Task<ActionResult<Product>> Details( int id)
     {
@@ -48,7 +53,11 @@ public class ProductController : Controller
         }
         return View("Details",product); 
     }
-
+    public IActionResult GetSearchSuggestions(string searchTerm)
+    {
+       return Json(_productService.GetSuggestion(searchTerm));
+    }
+    [Authorize]
     public IActionResult Create()
     {
         

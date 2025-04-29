@@ -55,11 +55,29 @@
         width:92%;
         color: grey;
     }
+    #suggestionsBox {
+    border: 1px solid #ccc;
+    max-height: 200px;
+    background-color: white;
+    width: 75vw;
+    z-index: 3;
+    border-radius: 2px;
+    display: none;
+}
+
+.suggestionItem {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.suggestionItem:hover {
+    background-color: #f0f0f0;
+}
 </style>
 
 <div id="main-home-page">
-    <input id="search" placeholder="Search" />
-    
+    <input type="text" id="search" placeholder="Search for products..." autocomplete="off" />
+    <div id="suggestionsBox"></div>
 
     <h2>All products</h2>
     @if(Model == null || Model.Any() == false) {
@@ -83,3 +101,47 @@
         </div>
     }
 </div>
+
+<script>
+    $(document).ready(function() {
+    $("#search").on("input", function() {
+        var query = $(this).val();
+
+        if (query.length >= 2) {
+            $.ajax({
+                url: '/Product/GetSearchSuggestions', 
+                type: 'GET',
+                data: { searchTerm: query },
+                success: function(data) {
+                    var suggestions = data;
+                    var suggestionsBox = $("#suggestionsBox");
+                    suggestionsBox.empty();
+                    if (suggestions.length > 0) {
+                        suggestionsBox.show();
+                        suggestions.forEach(function(item) {
+                            console.log(item.name)
+                            suggestionsBox.append(`<a href = "/Product/Details/${item.id}"><div class="suggestionItem" >` + item.name + '</div></a>');
+                        });
+
+                        // Click event for suggestion
+                        $(".suggestionItem").on("click", function() {
+                            $("#searchBox").val($(this).text());
+                            suggestionsBox.hide();
+                        });
+                    } else {
+                        suggestionsBox.hide();
+                    }
+                }
+            });
+        } else {
+            $("#suggestionsBox").hide();
+        }
+    });
+
+    $(document).click(function(event) {
+        if (!$(event.target).closest('#searchBox, #suggestionsBox').length) {
+            $('#suggestionsBox').hide();
+        }
+    });
+});
+    </script >

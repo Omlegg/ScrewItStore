@@ -166,6 +166,12 @@ button.accept-policy {
             <div id="create-form-column">
                 <label class="create-form-label" for="ConfirmPassword">Confirm Password</label>
                 <input class="create-form-input" id="ConfirmPassword" name="ConfirmPassword" type="password" placeholder="Confirm your password" required />
+            </div><div id="create-form-column">
+            <label class="form-label" for="ProfilePicture">Profile Picture</label>
+                <input type="file" class="form-control" id="ProfilePicture" name="ProfilePicture" required />
+                <div id="image-preview-container" style="margin-top:10px;">
+                    <img id="image-preview" style="max-width: 100%; height: auto; display: none; border: 1px solid #ccc; padding: 10px;" />
+                </div>
             </div>
 
             <button type="submit">Create User</button>

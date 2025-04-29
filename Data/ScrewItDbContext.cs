@@ -11,6 +11,7 @@ namespace ScrewItBackEnd.Data
 {
     public class ScrewItDbContext : IdentityDbContext<User, IdentityRole, string>
     {        
+        public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Product> Cart { get; set; }
         public DbSet<ProductCategoriesTable> ProductCategoriesTables { get; set; }

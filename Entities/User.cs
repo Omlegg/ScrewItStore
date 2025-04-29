@@ -10,5 +10,6 @@ namespace ScrewItBackEnd.Entities
     {
         public List<Product> Products { get; set; } = new List<Product>();
         public List<Cart> Carts { get; set; } = new List<Cart>();
+        public string PictureUrl { get; set; }
     }
 }

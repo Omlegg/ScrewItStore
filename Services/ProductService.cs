@@ -6,6 +6,9 @@ using ScrewItBackEnd.Entities;
 using ScrewItBackEnd.Models;
 using ScrewItBackEnd.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using ScrewItBackEnd.Dtos;
 
 namespace  ScrewItBackEnd.Services;
 public class ProductService : IProductService
@@ -15,6 +18,25 @@ public class ProductService : IProductService
     public ProductService(ScrewItDbContext context)
     {
         _context = context;
+    }
+    public List<ProductSearch> GetSuggestion(string searchTerm){
+        if (string.IsNullOrEmpty(searchTerm))
+            {
+                return null;
+            }
+
+            var suggestions = _context.Products
+                                    .Where(p => p.Name.StartsWith(searchTerm))  
+                                    .Select(p => new ProductSearch {Id= p.Id, Name =p.Name })
+                                    .Take(5)  
+                                    .ToList();
+
+            return suggestions;
+    }
+
+    private JsonResult Json(object suggestions, object allowGet)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task CreateProductAsync(string name, string description, decimal price, int[] selectedCategoryIds, string pictureurl, string userId)
