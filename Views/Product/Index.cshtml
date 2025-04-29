@@ -4,63 +4,82 @@
     ViewData["Title"] = "Home Page";
 }
 
+<style>
+    #main-home-page{
+        display: flex; 
+        align-items: center;
+        flex-direction: column;
+    }
+    
+    #search {
+        margin-top: 20px;
+        height:30px;
+        font-size: 15px;
+        width: 75vw;
+        display: flex;
+        justify-content: center;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        align-items: center;
+        border: 2px solid white;
+        border-radius: 5px;
+        background-color: rgba(0, 0, 0, 0.242);
+        color : white;
+    }
 
+    .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        width:92vw;
+        margin-top: 30px;
+    }
 
-    <div id = "main-home-page">
-        <input id = "search" placeholder="Search">
-        </input>
-    </div>
-    @Html.ActionLink("Create a new product", "Create", "Product")
+    .product-card {
+        width: 300px;
+        text-align: center;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+    #image{
+        width: 200px;
+        height: 200px;
+    }
+    .details{
+    }
+    .line{
+        width:92%;
+        color: grey;
+    }
+</style>
+
+<div id="main-home-page">
+    <input id="search" placeholder="Search" />
     
 
-    
-<h2>All products</h2>
-@if(Model == null || Model.Any() == false) {
-    <h3>...</h3>
-}
-else {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Price</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var product in Model) {
-                <tr id="row">
-                    <th><a class="nav-link text-dark" href="Product/Details/@product.Id">@product.Id</a></th> 
-                    <td>@product.Name</td>
-                    <td>@product.Description</td>
-                    <td>@product.Price</td>
-                    <td><button class="btn btn-danger" onclick="deleteGame(@product.Id)">delete</button></td>
-                    <td><button onclick="location.href='@Url.Action("Update", "Product")'" class="btn btn-info">
-                        Back to Home
-                    </button></td>
-                </tr>
+    <h2>All products</h2>
+    @if(Model == null || Model.Any() == false) {
+        <h3>No products Uploaded Yet :(</h3>
+    }
+    else {
+        <div class="product-list">
+            @foreach (var product in Model)
+            {
+                
+                <div class="product-card" onclick="window.location.href='@Url.Action("Details", "Product", new { id = product.Id })';" style="cursor: pointer;">
+                    <img id="image" src="@product.PictureUrl" />
+                    <hr class="line">
+                    <div class="details">
+                        <p><strong>Name:</strong> @product.Name</p>
+                        <p><strong>Description:</strong> @product.Description</p>
+                        <p><strong>Price:</strong> $@product.Price</p>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
-
-<script>
-    async function deleteGame(productId) {
-        try {
-            const response = await fetch(`http://localhost:5155/Product/DeleteConfirmed/${productId}`, {
-                method: 'DELETE'
-            });
-
-            if (response.ok) {
-                document.getElementById('row').remove();
-            } else {
-                console.error(response);
-            }
-        } catch (error) {
-            console.error("Request failed", error);
-        }
-}
-</script>
+        </div>
+    }
+</div>

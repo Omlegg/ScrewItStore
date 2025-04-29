@@ -11,13 +11,21 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
-
+#details{
+    display: flex;
+    justify-content: space-evenly;
+}
 .product-info p {
     font-size: 18px;
     margin: 15px 0;
     color: #555;
 }
-
+#image{
+    width:200px;
+    height:200px;
+    border-radius: 5px;
+    using Microsoft.Extensions.Azure;
+}
 .btn-secondary {
     display: inline-block;
     padding: 10px 20px;
@@ -39,11 +47,18 @@
 
 <div class="product-details-container">
     <h2>@Model.Name</h2>
-
-    <div class="product-info">
-        <p><strong>Description:</strong> @Model.Description</p>
-        <p><strong>Price:</strong> $@Model.Price</p>
+    <div id="details">
+        <img id="image" src="@Model.PictureUrl" />
+        <div class="product-info">
+            <p><strong>Description:</strong> @Model.Description</p>
+            <p><strong>Price:</strong> $@Model.Price</p>
+            @foreach(var productCategory in Model.ProductCategories){
+                if (productCategory.Category != null)
+                {
+                    <p><strong>@productCategory.Category.Name</strong></p>
+                }   
+            }
+        </div>
     </div>
-
     <a asp-action="Index" class="btn btn-secondary mt-3">Back to Products</a>
 </div>

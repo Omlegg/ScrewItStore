@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ScrewItBackEnd.Entities
+namespace ScrewItBackEnd.Dtos
 {
     public class ProductDtoForPic
     {
@@ -11,5 +11,7 @@ namespace ScrewItBackEnd.Entities
         public decimal Price { get; set; } 
         public string Name {get;set;}
         public required IFormFile ProductPicture { get; set; }
+
+        public int[] selectedCategoryIds {get;set;}
     }
 }

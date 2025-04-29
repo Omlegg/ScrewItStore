@@ -1,7 +1,60 @@
+@using ScrewItBackEnd.Dtos
 @using ScrewItBackEnd.Entities
-@model User
+@model ProductDtoForPic
+@{
+    List<ProductCategories> categories = new List<ProductCategories>((ProductCategories[])Enum.GetValues(typeof(ProductCategories))); 
+    IEnumerable<ValidationResponse>? validationErrors = null;
+    var validationErrorsObject = base.ViewData["validation_errors"];
+    Console.WriteLine(validationErrorsObject);
+    if(validationErrorsObject is IEnumerable<ValidationResponse>) {
+        validationErrors = validationErrorsObject as IEnumerable<ValidationResponse>;
+        
+    }
+}
+
+
+
 
 <style>
+  .form-column {
+        margin-bottom: 1.5rem;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .create-form-label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .create-form-input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        color: #333;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+        resize: none;
+    }
+
+    .create-form-input:focus {
+        outline: none;
+        border-color: #0056b3;
+        background-color: #fff;
+    }
+
+    .create-form-input option {
+        padding: 10px;
+    }
+
+    .create-form-input:hover {
+        border-color: #007bff;
+    }
     a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -104,31 +157,79 @@ button.accept-policy {
   background-color: #0056b3;
 }
 </style>
-<div id = "main-home-page">
-  <form id="form-create" method="post" action="/Product/Create" enctype="multipart/form-data">
-      <div id="create-form">
-          <div id="create-form-column">
-              <label class="create-form-label" for="Name">Product's Name</label>
-              <input class="create-form-input" id="Name" name="Name" type="text" placeholder="Enter your product's name" required />
-          </div>
 
-          <div id="create-form-column">
-              <label class="create-form-label" for="Price">Product's Price</label>
-              <input class="create-form-input" id="Price" name="Price" type="number" step="0.01" placeholder="Enter your product's price" required />
-          </div>
+@if(validationErrors != null) {
 
-          <div id="create-form-column">
-              <label class="create-form-label" for="Description">Product's Description</label>
-              <textarea class="create-form-input" id="Description" name="Description" placeholder="Enter your product's description" required></textarea>
-          </div>
+    <ul>
+        @foreach(var validationErrorItem in validationErrors) {
+            <li>
+                <span>@validationErrorItem.Message</span>
+            </li>
+        }
+    </ul>
+}
 
+<div id="main-home-page">
+    <form id="form-create" method="post" action="/Product/Create" enctype="multipart/form-data">
+        <div asp-validation-summary="All"></div>
+        <div id="create-form">
+            <div id="create-form-column">
+                <label class="create-form-label" for="Name">Product's Name</label>
+                <input class="create-form-input" id="Name" name="Name" type="text" placeholder="Enter your product's name" required />
+            </div>
+
+            <div id="create-form-column">
+                <label class="create-form-label" for="Price">Product's Price</label>
+                <input class="create-form-input" id="Price" name="Price" type="number" step="0.01" placeholder="Enter your product's price" required />
+            </div>
+
+            <div id="create-form-column">
+                <label class="create-form-label" for="Description">Product's Description</label>
+                <textarea class="create-form-input" id="Description" name="Description" placeholder="Enter your product's description" required></textarea>
+            </div>
           <div id="create-form-column">
               <label class="form-label" for="ProductPicture">Picture</label>
-              <input type="file" class="form-control" name="ProductPicture" required />
-          </div>
-      </div>
+              <input type="file" class="form-control" id="ProductPicture" name="ProductPicture" required />
+              <div id="image-preview-container" style="margin-top:10px;">
+                  <img id="image-preview" style="max-width: 100%; height: auto; display: none; border: 1px solid #ccc; padding: 10px;" />
+              </div>
+           </div>
 
-      <button type="submit">Create</button>
-  </form>
+            <div id="create-form-column">
+                <label class="create-form-label" for="CategoryId">Select Product Categories</label>
+                <select class="create-form-input" id="CategoryId" name="CategoryId" multiple required>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@Convert.ToInt32(category)">@category</option>
+                    }
+                </select>
+            </div>
+            
+          <button type="submit">Create</button>
+        </div>
+      </form>
+    </div>
 
-</div>
+    @section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
+<script>
+document.getElementById('ProductPicture').addEventListener('change', function(event) {
+    const preview = document.getElementById('image-preview');
+    const file = event.target.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block'; // Show the image
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.src = '';
+        preview.style.display = 'none'; // Hide if no file
+    }
+});
+</script>
