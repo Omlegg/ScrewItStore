@@ -1,5 +1,7 @@
+@using Microsoft.AspNetCore.Identity
 @using ScrewItBackEnd.Entities
 @model Product
+@inject UserManager<User> _UserManager;
 
 <style>
     .product-details-container {
@@ -23,6 +25,7 @@
 #image{
     width:200px;
     height:200px;
+    using Microsoft.AspNetCore.Identity;
     border-radius: 5px;
     using Microsoft.Extensions.Azure;
 }
@@ -52,6 +55,7 @@
         <div class="product-info">
             <p><strong>Description:</strong> @Model.Description</p>
             <p><strong>Price:</strong> $@Model.Price</p>
+            <p><strong>Seller:</strong> @await _UserManager.FindByIdAsync(Model.UserId)</p>
             @foreach(var productCategory in Model.ProductCategories){
                 if (productCategory.Category != null)
                 {

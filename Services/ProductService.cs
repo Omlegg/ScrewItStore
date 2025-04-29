@@ -17,15 +17,15 @@ public class ProductService : IProductService
         _context = context;
     }
 
-    public async Task CreateProductAsync(string name, string description, decimal price, int[] selectedCategoryIds, string pictureurl)
+    public async Task CreateProductAsync(string name, string description, decimal price, int[] selectedCategoryIds, string pictureurl, string userId)
     {
-        // Create the new product
         var product = new Product
         {
             Name = name,
             Description = description,
             Price = price,
-            PictureUrl = pictureurl
+            PictureUrl = pictureurl,
+            UserId = userId,
         };
 
         _context.Products.Add(product);

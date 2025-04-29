@@ -58,13 +58,24 @@ public class ProductController : Controller
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] ProductDtoForPic dto)
     {
-        string? userId = User.FindFirst("UserId")?.Value;
+        if (!User.Identity.IsAuthenticated)
+        {
+            Console.WriteLine("1");
+            return Unauthorized(); // Or redirect to login
+        }
+        foreach (var claim in User.Claims)
+        {
+            Console.WriteLine($"{claim.Type}: {claim.Value}");
+        }
+        Console.WriteLine(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
             var product = new Product{
                 Name = dto.Name,
                 Description = dto.Description,
                 Price = dto.Price,
                 PictureUrl = "temporary",
-                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                UserId = userId
             };
             var validationResult = await this.productValidator.ValidateAsync(product);
 
@@ -78,7 +89,7 @@ public class ProductController : Controller
                 
                 return base.Redirect("/Product/Create");
             }
-            await _productService.CreateProductAsync(product.Name, product.Description, product.Price, dto.selectedCategoryIds, product.PictureUrl);
+            await _productService.CreateProductAsync(product.Name, product.Description, product.Price, dto.selectedCategoryIds, product.PictureUrl,product.UserId);
             var allProducts = await _productService.GetAllProductsAsync();
             var idForPictureName = allProducts.Last().Id;
             var productPicture = dto.ProductPicture;
