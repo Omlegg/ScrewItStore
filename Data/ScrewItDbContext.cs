@@ -12,6 +12,7 @@ namespace ScrewItBackEnd.Data
     public class ScrewItDbContext : IdentityDbContext<User, IdentityRole, string>
     {        
         public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Cart { get; set; }
         public DbSet<ProductCategoriesTable> ProductCategoriesTables { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
 
@@ -27,6 +28,17 @@ namespace ScrewItBackEnd.Data
                 .HasOne(p => p.User)
                 .WithMany(u => u.Products)
                 .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Cart>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Carts)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Cart>()
+                .HasOne(p => p.Product)
+                .WithMany(u => u.Carts)
+                .HasForeignKey(p => p.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProductCategory>()

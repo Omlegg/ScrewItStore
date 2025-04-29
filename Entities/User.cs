@@ -9,5 +9,6 @@ namespace ScrewItBackEnd.Entities
     public class User : IdentityUser
     {
         public List<Product> Products { get; set; } = new List<Product>();
+        public List<Cart> Carts { get; set; } = new List<Cart>();
     }
 }

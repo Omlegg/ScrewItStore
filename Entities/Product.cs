@@ -18,5 +18,7 @@ namespace ScrewItBackEnd.Entities
         [Required]
         public string UserId { get; set; }
         public User User { get; set; }
+        
+        public List<Cart> Carts { get; set; } = new List<Cart>();
     }
 }
