@@ -70,7 +70,7 @@ public class ProductController : Controller
         if (!User.Identity.IsAuthenticated)
         {
             Console.WriteLine("1");
-            return Unauthorized(); // Or redirect to login
+            return Unauthorized(); 
         }
         foreach (var claim in User.Claims)
         {
@@ -120,6 +120,7 @@ public class ProductController : Controller
             return RedirectToAction(nameof(Index)); 
  
     }
+    [Route("{id}")]
       public async Task<IActionResult> Edit(int id)
     {
         var product = await _productService.GetProductByIdAsync(id);
@@ -131,32 +132,35 @@ public class ProductController : Controller
     }
 
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, string name, string description, decimal price)
+    [Route("{id}")]
+    public async Task<IActionResult> Edit([FromForm] ProductEditDto product,int id)
     {
-        if (ModelState.IsValid)
+        var user = await userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        if ((ModelState.IsValid && product.UserId == base.User.FindFirstValue(ClaimTypes.NameIdentifier) )|| (User!= null && await userManager.IsInRoleAsync(user, "Admin")))
         {
-            await _productService.UpdateProductAsync(id, name, description, price);
+            await _productService.UpdateProductAsync(id, product.Name, product.Description, product.Price);
             return RedirectToAction(nameof(Details), new { id });  
         }
         return View();
     }
 
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> Delete(int id, [FromBody] ProductDeleteDto product)
     {
-        var product = await _productService.GetProductByIdAsync(id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-        return View(product);  
-    }
+        Console.WriteLine($"Received delete for product {id}, userId: {product?.UserId}");
 
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        await _productService.DeleteProductAsync(id);
-        return RedirectToAction(nameof(Index));
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await userManager.FindByIdAsync(currentUserId);
+
+        if ((ModelState.IsValid && product.UserId == currentUserId) || (user != null && await userManager.IsInRoleAsync(user, "Admin")))
+        {
+            await _productService.DeleteProductAsync(id);
+            return Ok();
+        }
+
+        return Forbid(); 
     }
 }

@@ -4,7 +4,6 @@ for details on configuring this project to bundle and minify static web assets. 
   width:100vw;
   height: 50px;
   background-color: rgb(151, 141, 160);
-  border-radius: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -19,7 +18,7 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 #right-header{
-  width:300px;
+  width:400px;
   display: flex;
   color: aliceblue;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -43,7 +42,6 @@ for details on configuring this project to bundle and minify static web assets. 
   width:100vw;
   height: 250px;
   background-color: rgb(151, 141, 160);
-  border-radius: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;

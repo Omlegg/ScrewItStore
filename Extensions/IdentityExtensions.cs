@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using ScrewItBackEnd.Data;
 using ScrewItBackEnd.Entities;
 
@@ -29,6 +30,13 @@ namespace ScrewItBackEnd.Extensions
 
             await roleManager.CreateAsync(new IdentityRole(UserRoleDefaults.User));
             await roleManager.CreateAsync(new IdentityRole(UserRoleDefaults.Admin));
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var user = await userManager.FindByNameAsync("Imran"); 
+
+            if (user != null && !await userManager.IsInRoleAsync(user, "Admin"))
+            {
+                await userManager.AddToRoleAsync(user, "Admin");
+            }
         }
     }
 }

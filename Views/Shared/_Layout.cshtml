@@ -1,6 +1,11 @@
-﻿﻿@{
+﻿﻿@using System.Security.Claims
+@{
     bool isAuthenticated = base.User.Identity?.IsAuthenticated ?? false;
 }
+@{
+    var isAdmin = User.IsInRole("Admin");
+}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +53,16 @@
                         @if(isAuthenticated != true){
                         <div id = "sign-up"><a href="/Identity/Register" style="text-decoration: none; color :white">Sign Up</a></div>
                         <div id = "sign-in"><a href="/Identity/Login" style="text-decoration: none; color :white">Sign In</a></div>
-                        }else{
+                        }
+                        else if(isAdmin == true){
+                            <div  id = "sign-in"><a href="/Product/Admin" style="text-decoration: none; color :white"><b>Admin Panel</b></a></div>
+                            
+                            <div  id = "sign-in"><a href="/Product/Create" style="text-decoration: none; color :white"><b>Create A Product</b></a></div>
+                            <div  id = "sign-in"><a href="/Identity/Account" style="text-decoration: none; color :white">Account</a></div>
+                            
+                            <a href="/Cart/Get/@User.FindFirstValue(ClaimTypes.NameIdentifier)"><img src="~/Assets/shopping-cart-outline-svgrepo-com.svg" style="width: 30px;height:30px;color :white;filter: invert(100%)"></a>
+                        }
+                        else{
                             <div  id = "sign-in"><a href="/Product/Create" style="text-decoration: none; color :white"><b>Create A Product</b></a></div>
                             <div  id = "sign-in"><a href="/Identity/Account" style="text-decoration: none; color :white">Account</a></div>
                             <img src="~/Assets/shopping-cart-outline-svgrepo-com.svg" style="width: 30px;height:30px;color :white;filter: invert(100%)">

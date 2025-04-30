@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using ScrewItBackEnd.Data;
 using ScrewItBackEnd.Entities;
 using ScrewItBackEnd.Extensions;
@@ -39,6 +40,18 @@ builder.Services.AddAuthentication(defaultScheme: CookieAuthenticationDefaults.A
     );
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5001", "http://127.0.0.1:5001")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
 builder.Services.AddDbContext<ScrewItDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
 
@@ -49,9 +62,12 @@ app.Use((context, next) =>
     context.Request.Host = new HostString("20.89.72.109");
     return next();
 });
+
 app.UseHttpsRedirection();
 app.UseAuthentication().UseCookiePolicy();
 app.UseStaticFiles();
+
+app.UseCors("AllowLocalhost");
 
 await app.SeedRolesAsync();
 app.UseRouting();

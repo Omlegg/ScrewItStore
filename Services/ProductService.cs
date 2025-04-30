@@ -24,11 +24,11 @@ public class ProductService : IProductService
             {
                 return null;
             }
-
             var suggestions = _context.Products
-                                    .Where(p => p.Name.StartsWith(searchTerm))  
-                                    .Select(p => new ProductSearch {Id= p.Id, Name =p.Name })
-                                    .Take(5)  
+                                    .AsEnumerable()  // Pull all records into memory
+                                    .Where(p => p.Name.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase))  // Apply case-insensitive check in memory
+                                    .Select(p => new ProductSearch { Id = p.Id, Name = p.Name })
+                                    .Take(5)
                                     .ToList();
 
             return suggestions;
