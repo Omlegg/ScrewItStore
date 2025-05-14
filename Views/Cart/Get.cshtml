@@ -30,7 +30,6 @@
     }
 
     .product-list {
-    using ScrewItBackEnd.Data;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -60,27 +59,41 @@
         color: grey;
     }
     #suggestionsBox {
-    border: 1px solid #ccc;
-    max-height: 200px;
-    background-color: white;
-    width: 75vw;
-    z-index: 3;
-    border-radius: 2px;
-    display: none;
-}
+        border: 1px solid #ccc;
+        max-height: 200px;
+        background-color: white;
+        width: 75vw;
+        z-index: 3;
+        border-radius: 2px;
+        display: none;
+    }
 
-.suggestionItem {
-    padding: 8px;
-    cursor: pointer;
-}
+    .suggestionItem {
+        padding: 8px;
+        cursor: pointer;
+    }
 
-.suggestionItem:hover {
-    background-color: #f0f0f0;
-}
+    .suggestionItem:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* Loading indicator */
+    .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(0,0,0,.3);
+        border-radius: 50%;
+        border-top-color: #000;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @@keyframes spin {
+        to { transform: rotate(360deg); }
+    }
 </style>
 
 <div id="main-home-page">
-
     <h2>All products</h2>
     @if(Model == null || Model.Any() == false) {
         <h3>No products Uploaded Yet :(</h3>
@@ -95,17 +108,26 @@
                     <div class="details">
                         @{
                             var amount = dbcontext.Carts.FirstOrDefault(c=> c.ProductId == product.Id)?.AmountInCart;
-                        
-                        }<p><strong>Name:</strong> @product.Name</p>
+                        }
+                        <p><strong>Name:</strong> @product.Name</p>
                         <p><strong>Description:</strong> @product.Description</p>
                         <p><strong>Price:</strong> $@product.Price</p>
                         <p><strong>Total:</strong><span id="total-@product.Id"> $@(product.Price*amount)</span></p>
-                        <div style="display:flex; flex-direction: row; justify-content: space-evenly;">
-                            <button class="btn btn-danger" onclick="event.stopPropagation();RemoveOneProduct(@product.Id,@product.Price)">-</button>
-                            <p ><strong>Amount:</strong> <p id="amount-@product.Id">@amount</p></p>
-                            <button class="btn btn-secondary" onclick="event.stopPropagation();AddOneProduct(@product.Id,@product.Price)">+</button>
+                        <div style="display:flex; flex-direction: row; justify-content: space-evenly; align-items: center;">
+                            <button class="btn btn-danger" onclick="event.stopPropagation();RemoveOneProduct(@product.Id,@product.Price)">
+                                <span id="minus-loading-@product.Id" style="display:none;" class="loading"></span>
+                                <span id="minus-text-@product.Id">-</span>
+                            </button>
+                            <p><strong>Amount:</strong> <span id="amount-@product.Id">@amount</span></p>
+                            <button class="btn btn-secondary" onclick="event.stopPropagation();AddOneProduct(@product.Id,@product.Price)">
+                                <span id="plus-loading-@product.Id" style="display:none;" class="loading"></span>
+                                <span id="plus-text-@product.Id">+</span>
+                            </button>
                         </div>
-                        <button class="btn btn-danger" onclick="event.stopPropagation();deleteProduct(@product.Id,'@product.UserId')">Delete From Cart</button>
+                        <button class="btn btn-danger" onclick="event.stopPropagation();deleteProduct(@product.Id,'@product.UserId')">
+                            <span id="delete-loading-@product.Id" style="display:none;" class="loading"></span>
+                            <span id="delete-text-@product.Id">Delete From Cart</span>
+                        </button>
                     </div>
                 </div>
             }
@@ -113,47 +135,113 @@
     }
 </div>
 
-<script>
-    async function RemoveOneProduct(productId, productPrice) {
-        const amountElement = document.getElementById(`amount-${productId}`);       
-        const totalElement = document.getElementById(`total-${productId}`);       
-        if(amountElement.innerText > 0){
-            amountElement.innerText -=1;
-            console.log(productPrice)
-            var newTotal= parseInt(amountElement.innerHTML)*productPrice;
-            if(newTotal.toString().split(".")[1].length <2){
+@section Scripts {
+    <script>
+        // Initialize WebSocket connection
+        const socket = new WebSocket(`ws://${window.location.host}/cart-ws`);
+
+        // Connection event handlers
+        socket.onopen = () => console.log("WebSocket connected for cart updates");
+        socket.onerror = (err) => console.error("WebSocket error:", err);
+        socket.onclose = () => console.log("WebSocket disconnected");
+
+        // Handle server responses
+        socket.onmessage = (e) => {
+            const response = JSON.parse(e.data);
+            
+            // Update UI
+            const amountElement = document.getElementById(`amount-${response.productId}`);
+            const totalElement = document.getElementById(`total-${response.productId}`);
+            
+            if (amountElement) amountElement.textContent = response.newAmount;
+            if (totalElement) totalElement.textContent = `$${response.newTotal.toFixed(2)}`;
+            
+            // Hide loading indicators
+            toggleLoading(response.productId, false);
+        };
+
+        // Toggle loading indicators
+        function toggleLoading(productId, isLoading) {
+            const minusLoading = document.getElementById(`minus-loading-${productId}`);
+            const minusText = document.getElementById(`minus-text-${productId}`);
+            const plusLoading = document.getElementById(`plus-loading-${productId}`);
+            const plusText = document.getElementById(`plus-text-${productId}`);
+            const deleteLoading = document.getElementById(`delete-loading-${productId}`);
+            const deleteText = document.getElementById(`delete-text-${productId}`);
+
+            if (minusLoading && minusText) {
+                minusLoading.style.display = isLoading ? 'inline-block' : 'none';
+                minusText.style.display = isLoading ? 'none' : 'inline-block';
+            }
+            if (plusLoading && plusText) {
+                plusLoading.style.display = isLoading ? 'inline-block' : 'none';
+                plusText.style.display = isLoading ? 'none' : 'inline-block';
+            }
+            if (deleteLoading && deleteText) {
+                deleteLoading.style.display = isLoading ? 'inline-block' : 'none';
+                deleteText.style.display = isLoading ? 'none' : 'inline-block';
+            }
+        }
+
+        // Cart functions
+        function AddOneProduct(productId, productPrice) {
+            toggleLoading(productId, true);
+            const userId = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
+            socket.send(JSON.stringify({
+                action: "add",
+                userId: userId,
+                productId: productId,
+                price: productPrice
+            }));
+        }
+
+        function RemoveOneProduct(productId, productPrice) {
+            toggleLoading(productId, true);
+            const userId = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
+            socket.send(JSON.stringify({
+                action: "remove",
+                userId: userId,
+                productId: productId,
+                price: productPrice
+            }));
+        }
+
+        async function deleteProduct(productId, userId) {
+            try {
+                document.getElementById(`delete-loading-${productId}`).style.display = 'inline-block';
+                document.getElementById(`delete-text-${productId}`).style.display = 'none';
                 
+                const response = await fetch("http://127.0.0.1:5001/Cart/Delete/", {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userId, productId: productId })
+                });
+
+                if (response.ok) {
+                    const productCard = document.querySelector(`.product-card[onclick*="${productId}"]`);
+                    if (productCard) productCard.remove();
+                } else {
+                    const error = await response.text();
+                    console.error("Failed to delete:", error);
+                }
+            } catch (error) {
+                console.error("Request failed", error);
+            } finally {
+                document.getElementById(`delete-loading-${productId}`).style.display = 'none';
+                document.getElementById(`delete-text-${productId}`).style.display = 'inline-block';
             }
-            totalElement.innerText = newTotal;
         }
-    }
 
-    async function deleteProduct(productId, userId) {
-        try {
-            const response = await fetch("http://127.0.0.1:5001/Cart/Delete/", {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userId: userId, productId: productId })
-            });
-
-            if (response.ok) {
-                const amountElement = document.getElementById(`amount-${productId}`).remove;
-            } else {
-                const error = await response.text();
-                console.error("Failed to delete:", error);
+        // Fallback to HTTP if WebSocket fails
+        function checkSocketConnection() {
+            if (socket.readyState !== WebSocket.OPEN) {
+                console.warn("WebSocket not connected, falling back to HTTP");
+                // Implement HTTP fallback here if needed
+                return false;
             }
-        } catch (error) {
-            console.error("Request failed", error);
+            return true;
         }
-    }
-    async function AddOneProduct(productId,productPrice) {
-        const amountElement = document.getElementById(`amount-${productId}`); 
-        const totalElement = document.getElementById(`total-${productId}`);      
-        amountElement.innerText = parseInt(amountElement.innerHTML)+1;    
-        totalElement.innerText = parseInt(amountElement.innerHTML)*productPrice;    
-    }
-</script>
-
-
+    </script>
+}

@@ -17,6 +17,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<AbstractValidator<Product>, ProductValidator>();
+builder.Services.AddScoped<WebSocketHandlerService>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ScrewItDbContext>()
@@ -65,6 +66,27 @@ app.Use((context, next) =>
     return next();
 });
 
+app.UseWebSockets();
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/cart-ws")
+    {
+        if (context.WebSockets.IsWebSocketRequest)
+        {
+            var handler = context.RequestServices.GetRequiredService<WebSocketHandlerService>();
+            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            await handler.HandleCartWebSocket(webSocket, context.RequestServices);
+        }
+        else
+        {
+            context.Response.StatusCode = 400;
+        }
+    }
+    else
+    {
+        await next();
+    }
+});
 app.UseHttpsRedirection();
 app.UseAuthentication().UseCookiePolicy();
 app.UseStaticFiles();
@@ -79,4 +101,6 @@ app.MapControllerRoute(
     pattern: "{controller=Product}/{action=Index}");
 
 app.UseAuthorization();
+
+
 app.Run();
