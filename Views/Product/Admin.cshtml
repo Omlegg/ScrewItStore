@@ -1,0 +1,105 @@
+@using ScrewItBackEnd.Entities
+@model List<Product>?
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<style>
+    #main-user-page {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .user-table {
+        width: 90vw;
+        border-collapse: collapse;
+        margin-top: 30px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-table th, .user-table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .user-table th {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .user-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    h2 {
+        color: #333;
+        margin-top: 20px;
+    }
+</style>
+
+<div id="main-user-page">
+    <h2>All Users</h2>
+    @if (Model == null || !Model.Any())
+    {
+        <h3>No users found.</h3>
+    }
+    else
+    {
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Photo</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr id="row-@product.Id">
+                        <td>@product.Id</td>
+                        <td>@product.Name</td>
+                        <td>@product.Price</td>
+                        <td><img id="image" src="@product.PictureUrl" style="width:60px;height:60px" /></td>
+                        <td><a href="/Product/Edit/@product.Id" class="btn btn-secondary mt-3">Change</a></td>
+                        <td><button class="btn btn-danger" onclick="deleteProduct(@product.Id,'@product.UserId')">Delete</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<script>
+    async function deleteProduct(productId, userId) {
+
+    try {
+        const response = await fetch(`http://127.0.0.1:5001/Product/Delete/${productId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userId: userId })
+        });
+
+        if (response.ok) {
+            document.getElementById(`row-${productId}`).remove();
+        } else {
+            const error = await response.text();
+            console.error("Failed to delete:", error);
+        }
+    } catch (error) {
+        console.error("Request failed", error);
+    }
+}
+
+</script>

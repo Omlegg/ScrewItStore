@@ -1,0 +1,116 @@
+﻿﻿@using System.Security.Claims
+@{
+    bool isAuthenticated = base.User.Identity?.IsAuthenticated ?? false;
+}
+@{
+    var isAdmin = User.IsInRole("Admin");
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ScrewItBackEnd</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ScrewItBackEnd.styles.css" asp-append-version="true" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <style>
+        html, body {
+        height: 100%;
+        margin: 0;
+        }
+
+        .wrapper {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        }
+
+        .content {
+        flex: 1;
+        }
+
+        .footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        }
+    </style>
+    <div class="wrapper">
+        <header>
+            <center>
+                <div id = "header">
+                    <div id = "left-header">
+                        <a href="/" id = "logo-name"><img src="~/Assets/6076703.svg" style="width: 30px;height:30px;color :white;filter: invert(100%)"></a>
+                       
+                        <a href="/" id = "logo-name"><p>
+                       ScrewIt Store</p></a>
+                    </div>
+                    <div id = "right-header">
+                        @if(isAuthenticated != true){
+                        <div id = "sign-up"><a href="/Identity/Register" style="text-decoration: none; color :white">Sign Up</a></div>
+                        <div id = "sign-in"><a href="/Identity/Login" style="text-decoration: none; color :white">Sign In</a></div>
+                        }
+                        else if(isAdmin == true){
+                            <div  id = "sign-in"><a href="/Product/Admin" style="text-decoration: none; color :white"><b>Admin Panel</b></a></div>
+                            
+                            <div  id = "sign-in"><a href="/Product/Create" style="text-decoration: none; color :white"><b>Create A Product</b></a></div>
+                            <div  id = "sign-in"><a href="/Identity/Account/@User.FindFirstValue(ClaimTypes.NameIdentifier)" style="text-decoration: none; color :white">Account</a></div>
+                            
+                            <div><a href="/Cart/Get/@User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)">
+                                <img src="@Url.Content("~/Assets/shopping-cart-outline-svgrepo-com.svg")"
+                                    alt="Cart"
+                                    style="width: 30px; height: 30px; filter: invert(100%);" />
+                            </a></div>
+                        }
+                        else{
+                            <div  id = "sign-in"><a href="/Product/Create" style="text-decoration: none; color :white"><b>Create A Product</b></a></div>
+                            <div  id = "sign-in"><a href="/Identity/Account/@User.FindFirstValue(ClaimTypes.NameIdentifier)" style="text-decoration: none; color :white">Account</a></div>
+                            <div><a href="/Cart/Get/@User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)">
+                                <img src="@Url.Content("~/Assets/shopping-cart-outline-svgrepo-com.svg")"
+                                    alt="Cart"
+                                    style="width: 30px; height: 30px; filter: invert(100%);" />
+                            </a></div>
+                        }
+                    </div>
+                </div>
+            </center>
+        </header>
+        <div class="content">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+        <footer>
+            <center>
+                <div id = "footer">
+                    <div>
+                        <p id = "logo-name">ScrewIt Store</p>
+                        <p>About Us</p>
+                        <p>Our History</p>
+                        <p>Our Purpose</p>
+                    
+                    </div>
+                    <div>
+                        <p id = "logo-name">Contact Us</p>
+                        <p>Place Holder Country</p>
+                        <p>Place Holder City</p>
+                        <p>Place Holder adress</p>
+                        <p>Place Holder phone number</p>
+                    </div>
+                </div>
+            </center>
+        </footer>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

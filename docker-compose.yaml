@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: screwitstore-postgres
+    environment:
+      POSTGRES_USER: screwit228
+      POSTGRES_PASSWORD: store223password22@
+      POSTGRES_DB: screwitstoredb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - screwitstore-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: screwitstore-app
+    ports:
+      - "8080:80"
+    environment:
+      ConnectionStrings__PostgreSql: "Host=postgres;Database=screwitstoredb;Username=screwit228;Password=store223password22@"
+    depends_on:
+      - postgres
+    networks:
+      - screwitstore-network
+
+volumes:
+  postgres_data:
+
+networks:
+  screwitstore-network:

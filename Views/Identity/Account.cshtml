@@ -1,0 +1,157 @@
+@using Microsoft.AspNetCore.Identity
+@using ScrewItBackEnd.Entities
+@using System.Security.Claims
+@model User 
+@inject UserManager<User> _UserManager;
+
+<style>
+    .product-details-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: #fdfdfd;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 400px;
+}
+#details{
+    display: flex;
+    justify-content: space-evenly;
+}
+.product-info p {
+    font-size: 18px;
+    margin: 15px 0;
+    color: #555;
+}
+#image{
+    width:200px;
+    height:200px;
+    border-radius: 5px;
+}
+.btn-secondary {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+    .product-card {
+        width: 300px;
+        text-align: center;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+    #image{
+        width: 200px;
+        height: 200px;
+    }
+    .details{
+    }
+    .line{
+        width:92%;
+        color: grey;
+    }
+    .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        width: 70%;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .product-card {
+        width: 300px;
+        text-align: center;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin: 0 auto;
+    }
+
+    .line {
+        width: 92%;
+        color: grey;
+        margin: 10px auto;
+    }
+
+    .details p {
+        margin: 5px 0;
+    }
+
+</style>
+
+<div style="display:flex;justify-content: space-between;">
+    <div class="product-details-container">
+        <h2>@Model.UserName</h2>
+        <div id="details">
+            <img id="image" src="@Model.PictureUrl" />
+            <div class="product-info">
+                <p><strong>Email:</strong> @Model.Email</p>
+                @if(Model.UserName == base.User.FindFirstValue(ClaimTypes.Name)){
+                    <a asp-action="Logout"  class="btn btn-secondary mt-3">Log Out</a>
+                }
+            </div>
+        
+    </div> 
+        <a asp-action="Index" asp-controller="Product" class="btn btn-secondary mt-3">Back to Products</a>
+
+        </div>
+    
+<div class="product-list">
+    @foreach (var product in ViewBag.Products)
+    {
+        <div class="product-card" onclick="window.location.href='@Url.Action("Details", "Product", new { id = product.Id })';" style="cursor: pointer;">
+            <img src="@product.PictureUrl" />
+            <hr class="line" />
+            <div class="details">
+                <p><strong>Name:</strong> @product.Name</p>
+                <p><strong>Description:</strong> @product.Description</p>
+                <p><strong>Price:</strong> $@product.Price</p>
+                @if (product.ProductCategories != null)
+                {
+                    <p><strong>Tags:</strong></p>
+                    @foreach (var productCategory in product.ProductCategories)
+                    {
+                        <p>@productCategory.Category.Name</p>
+                    }
+                }
+            </div>
+            @if (User != null && product.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <a href="/Product/Edit/@product.Id" class="btn btn-secondary">Change</a>
+                    <button class="btn btn-danger" onclick="deleteProduct(@product.Id,'@product.UserId')">Delete</button>
+                </div>
+            }
+            else
+            {
+                <form method="post" action="/Cart/Add/@product.Id">
+                    <button class="btn btn-secondary mt-3" type="submit">Add to Cart</button>
+                </form>
+            }
+        </div>
+    }
+</div>
+    </div>
